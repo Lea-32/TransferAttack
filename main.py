@@ -30,6 +30,12 @@ def get_parser():
 
 def main():
     args = get_parser()
+    custom_cache_dir = "./model_cache"
+    if not os.path.exists(custom_cache_dir):
+        os.makedirs(custom_cache_dir, exist_ok=True)
+    os.environ["TORCH_HOME"] = custom_cache_dir
+    os.environ["TIMM_CACHE_DIR"] = custom_cache_dir
+
     os.environ["CUDA_VISIBLE_DEVICES"] = args.GPU_ID
     if not os.path.exists(args.output_dir):
         os.makedirs(args.output_dir)

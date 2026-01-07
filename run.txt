@@ -1,0 +1,3 @@
+python main.py --input_dir ./dataset --output_dir ./output/mifgsm/resnet50 --attack mifgsm --model=resnet50
+python main.py --input_dir ./dataset --output_dir ./output/mifgsm/resnet50  --eval
+python main.py --input_dir ./dataset --output_dir ./output/mifgsm/resnet50 --attack ma --model resnet50
