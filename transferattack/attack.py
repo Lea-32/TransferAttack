@@ -4,6 +4,14 @@ import torch.nn as nn
 import numpy as np
 
 from .utils import *
+'''
+    通用的对抗攻击类，主要包括以下几个步骤：
+    1. 加载模型：加载目标模型，并将其包装成一个可用的模型，如EnsembleModel
+    2. 前向传播：获取模型的输出，并计算损失
+    3. 计算梯度：计算模型的梯度
+    4. 计算动量：计算动量，如Adam
+    5. 更新扰动：更新扰动，如FGSM，PGD，等等
+'''
 
 class Attack(object):
     """
@@ -39,6 +47,7 @@ class Attack(object):
 
     def load_model(self, model_name):
         """
+        加载模型，并wrap为统一接口
         The model Loading stage, which should be overridden when surrogate model is customized (e.g., DSM, SETR, etc.)
         Prioritize the model in torchvision.models, then timm.models
 
@@ -57,6 +66,7 @@ class Attack(object):
                 model = timm.create_model(model_name, pretrained=True)
             else:
                 raise ValueError('Model {} not supported'.format(model_name))
+            # 模型 eval 模式并移到 CUDA，然后用 wrap_model 包装（统一输入输出格式）
             return wrap_model(model.eval().cuda())
 
         if isinstance(model_name, list):
@@ -85,6 +95,7 @@ class Attack(object):
         momentum = 0
         for _ in range(self.epoch):
             # Obtain the output
+            # 先把 data+delta 通过 transform（可应用输入变换），再通过get_logits得到输出
             logits = self.get_logits(self.transform(data+delta, momentum=momentum))
 
             # Calculate the loss
@@ -97,8 +108,10 @@ class Attack(object):
             momentum = self.get_momentum(grad, momentum)
 
             # Update adversarial perturbation
+            # 用动量或梯度更新delta并做投影约束
             delta = self.update_delta(delta, data, momentum, self.alpha)
 
+        # 返回扰动delta
         return delta.detach()
 
     def get_logits(self, x, **kwargs):
@@ -112,6 +125,8 @@ class Attack(object):
         The loss calculation, which should be overrideen when the attack change the loss calculation (e.g., ATA, etc.)
         """
         # Calculate the loss
+        # 区分是否是目标攻击，如果是目标攻击通常需要最小化木星对目标类的loss，通过对loss取负把统一的loss变成目标攻击的目标
+        # 否则通常需要最大化对非目标类的loss，样本分类错误
         return -self.loss(logits, label) if self.targeted else self.loss(logits, label)
 
 
@@ -119,6 +134,7 @@ class Attack(object):
         """
         The gradient calculation, which should be overridden when the attack need to tune the gradient (e.g., TIM, variance tuning, enhanced momentum, etc.)
         """
+        # 直接对delta求梯度
         return torch.autograd.grad(loss, delta, retain_graph=False, create_graph=False)[0]
 
     def get_momentum(self, grad, momentum, **kwargs):

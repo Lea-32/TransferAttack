@@ -10,7 +10,8 @@ from transferattack.utils import *
 def get_parser():
     parser = argparse.ArgumentParser(description='Generating transferable adversaria examples')
     parser.add_argument('-e', '--eval', action='store_true', help='attack/evluation')
-    parser.add_argument('--attack', default='mifgsm', type=str, help='the attack algorithm', choices=transferattack.attack_zoo.keys())
+    parser.add_argument('--attack', default='mifgsm', type=str, help='the attack algorithm',
+                        choices=transferattack.attack_zoo.keys())
     parser.add_argument('--epoch', default=10, type=int, help='the iterations for updating the adversarial patch')
     parser.add_argument('--batchsize', default=32, type=int, help='the bacth size')
     parser.add_argument('--eps', default=16 / 255, type=float, help='the stepsize to update the perturbation')
@@ -19,7 +20,8 @@ def get_parser():
     parser.add_argument('--model', default='resnet50', type=str, help='the source surrogate model')
     parser.add_argument('--ensemble', action='store_true', help='enable ensemble attack')
     parser.add_argument('--random_start', default=False, type=bool, help='set random start')
-    parser.add_argument('--input_dir', default='./data', type=str, help='the path for custom benign images, default: untargeted attack data')
+    parser.add_argument('--input_dir', default='./data', type=str,
+                        help='the path for custom benign images, default: untargeted attack data')
     parser.add_argument('--output_dir', default='./results', type=str, help='the path to store the adversarial patches')
     parser.add_argument('--targeted', action='store_true', help='targeted attack')
     parser.add_argument('--GPU_ID', default='0', type=str)
@@ -41,7 +43,7 @@ def main():
         attacker = transferattack.load_attack_class(args.attack)(model_name=args.model, targeted=args.targeted)
 
         for batch_idx, [images, labels, filenames] in tqdm.tqdm(enumerate(dataloader)):
-            if args.attack in ['ttp', 'm3d']: 
+            if args.attack in ['ttp', 'm3d']:
                 for idx, target_class in enumerate(generation_target_classes):
                     perturbations = attacker(images, labels, idx)
                     new_output_dir = os.path.join(args.output_dir, str(target_class))
@@ -57,13 +59,15 @@ def main():
             model = wrap_model(model.eval().cuda())
             for p in model.parameters():
                 p.requires_grad = False
-                
-            if args.attack in ['ttp', 'm3d']: 
+
+            if args.attack in ['ttp', 'm3d']:
                 asr = 0
                 for idx, target_class in enumerate(generation_target_classes):
                     new_output_dir = os.path.join(args.output_dir, str(target_class))
-                    new_dataset = AdvDataset(input_dir=args.input_dir, output_dir=new_output_dir, targeted=True, target_class=target_class, eval=args.eval)
-                    new_dataloader = torch.utils.data.DataLoader(new_dataset, batch_size=args.batchsize, shuffle=False, num_workers=4)
+                    new_dataset = AdvDataset(input_dir=args.input_dir, output_dir=new_output_dir, targeted=True,
+                                             target_class=target_class, eval=args.eval)
+                    new_dataloader = torch.utils.data.DataLoader(new_dataset, batch_size=args.batchsize, shuffle=False,
+                                                                 num_workers=4)
                     asr += eval(model, new_dataloader, True)
                 asr /= 10
 
@@ -75,8 +79,8 @@ def main():
         print(res)
         with open('results_eval.txt', 'a') as f:
             f.write(args.output_dir + res + '\n')
-                
-                
+
+
 def eval(model, dataloader, is_targeted):
     correct, total = 0, 0
     for images, labels, _ in dataloader:

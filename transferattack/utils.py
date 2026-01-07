@@ -125,6 +125,7 @@ class AdvDataset(torch.utils.data.Dataset):
         return len(self.f2l.keys())
 
     def __getitem__(self, idx):
+    # 每张图片转换为torch.tensor格式
         filename = list(self.f2l.keys())[idx]
 
         assert isinstance(filename, str)

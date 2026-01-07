@@ -40,35 +40,45 @@ class MA(Attack):
         self.epoch = epoch
         self.decay = decay
 
-    def remove_module(self, state_dict):
-        # create new OrderedDict that does not contain `module.`
+    def remove_prefix(self, state_dict, prefix='model.'):
+        """
+        移除 state_dict 中键名的特定前缀
+        """
         from collections import OrderedDict
         new_state_dict = OrderedDict()
         for k, v in state_dict.items():
-            name = k[7:] # remove `module.`
+            # 如果键名以指定的 prefix 开头，则截掉它
+            if k.startswith(prefix):
+                name = k[len(prefix):]
+            else:
+                name = k
             new_state_dict[name] = v
         return new_state_dict
 
     def load_model(self, model_name):
-        """
-        The model Loading stage, overridden for MA attack
-        Prioritize the model in torchvision.models, then timm.models
-
-        Arguments:
-            model_name (str): the name of surrogate model in model_list in utils.py
-
-        Returns:
-            model (torch.nn.Module): the surrogate model wrapped by wrap_model in utils.py
-        """
         if model_name in models.__dict__.keys() and model_name == 'resnet50':
             print('=> Loading model {} from torchvision.models'.format(model_name))
             model = models.get_model(model_name)
-            ckpt_name = os.path.join(self.checkpoint_path, 'aligned_res50.pt')
-            ckpt = torch.load(ckpt_name)
+            ckpt_name = os.path.join(self.checkpoint_path, 'final_model.pt')
+
+            # 加载权重
+            ckpt = torch.load(ckpt_name, map_location='cpu')
+
+            # 自动尝试移除常见的前缀（model. 或 module.）
             try:
                 model.load_state_dict(ckpt)
             except RuntimeError:
-                model.load_state_dict(self.remove_module(ckpt))
+                # 如果直接加载失败，尝试移除 "model." 前缀
+                print("=> Attempting to load by removing 'model.' prefix...")
+                new_ckpt = self.remove_prefix(ckpt, 'model.')
+                try:
+                    model.load_state_dict(new_ckpt)
+                except RuntimeError:
+                    # 如果还失败，尝试移除 "module." 前缀
+                    print("=> Attempting to load by removing 'module.' prefix...")
+                    new_ckpt = self.remove_prefix(ckpt, 'module.')
+                    model.load_state_dict(new_ckpt)
+
         else:
             raise ValueError('Model {} not supported'.format(model_name))
         return wrap_model(model.eval().cuda())

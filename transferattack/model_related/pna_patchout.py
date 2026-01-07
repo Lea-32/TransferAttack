@@ -1,11 +1,43 @@
+import os, sys, socket
+print("=== ENV HF_* ===")
+for k,v in os.environ.items():
+    if k.startswith("HF_"):
+        print(k, "=", v)
+print("=== PROXY ===")
+for k in ["HTTP_PROXY","HTTPS_PROXY","http_proxy","https_proxy"]:
+    if os.environ.get(k):
+        print(k, "=", os.environ.get(k))
+print("=== HOSTS ENTRY FOR huggingface/hf-mirror ===")
+try:
+    import pathlib
+    hosts = pathlib.Path("/etc/hosts").read_text()
+    print("/etc/hosts contains 'hf-mirror'?", "hf-mirror" in hosts)
+    print("/etc/hosts contains 'huggingface'?", "huggingface" in hosts)
+except Exception as e:
+    print("can't read /etc/hosts:", e)
+print("=== DNS lookup for huggingface.co ===")
+try:
+    print(socket.getaddrinfo("huggingface.co", 443))
+except Exception as e:
+    print("dns error:", e)
+print("=== Python SSL certifi version ===")
+try:
+    import certifi, ssl
+    print("certifi:", certifi.where())
+except Exception as e:
+    print("certifi import error:", e)
+print("=== sys.path first entries ===")
+print(sys.path[:5])
+
+
 import random
 from functools import partial
-
+import os
+os.environ["HF_ENDPOINT"] = "https://huggingface.co"
 from timm.models import create_model
 
 from ..gradient.mifgsm import MIFGSM
 from ..utils import *
-
 
 class PNA_PatchOut(MIFGSM):
     """
