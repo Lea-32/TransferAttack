@@ -24,12 +24,15 @@ class MA(Attack):
         epsilon=4/255, alpha=1/255, epoch=20, decay=0.
 
     Example script:
+        # ResNet50 (需 aligned_res50.pt)
         python main.py --input_dir ./path/to/data --output_dir adv_data/ma/resnet50 --attack ma --model resnet50
+        # ViT (需 final_model.pt，含 model.xxx 格式的 ViT-Base 权重)
+        python main.py --input_dir ./path/to/data --output_dir adv_data/ma/vit --attack ma --model vit_base_patch16_224
         python main.py --input_dir ./path/to/data --output_dir adv_data/ma/resnet50 --eval
 
     Notes:
-        Download checkpoints ('aligned_res50.pt') from https://github.com/averyma/model-alignment, 
-        and put them in the path '/path/to/checkpoints/'.
+        - ResNet50: 下载 aligned_res50.pt 放到 checkpoints/
+        - ViT: 将 final_model.pt (ViT-Base 12 blocks) 放到 checkpoints/
     """
 
     def __init__(self, model_name, epsilon=16/255, alpha=1.6/255, epoch=10, decay=1., targeted=False, random_start=False,
@@ -56,29 +59,44 @@ class MA(Attack):
         return new_state_dict
 
     def load_model(self, model_name):
-        if model_name in models.__dict__.keys() and model_name == 'resnet50':
+        # ViT 架构：从 final_model.pt 加载（checkpoint 含 model.xxx 格式的 ViT 权重）
+        if model_name == 'vit_base_patch16_224':
+            print('=> Loading ViT from final_model.pt')
+            model = timm.create_model('vit_base_patch16_224', pretrained=False)
+            ckpt_name = os.path.join(self.checkpoint_path, 'final_model.pt')
+            if not os.path.exists(ckpt_name):
+                raise FileNotFoundError(f"Checkpoint 不存在: {ckpt_name}")
+            ckpt = torch.load(ckpt_name, map_location='cpu')
+            if isinstance(ckpt, dict) and 'state_dict' in ckpt:
+                ckpt = ckpt['state_dict']
+            elif isinstance(ckpt, dict) and 'model' in ckpt:
+                ckpt = ckpt['model']
+            # 移除 model. 前缀以匹配 timm 的 ViT 结构
+            if any(k.startswith('model.') for k in ckpt.keys()):
+                ckpt = self.remove_prefix(ckpt, 'model.')
+            model.load_state_dict(ckpt, strict=True)
+
+        elif model_name in models.__dict__.keys() and model_name == 'resnet50':
             print('=> Loading model {} from torchvision.models'.format(model_name))
             model = models.get_model(model_name)
-            ckpt_name = os.path.join(self.checkpoint_path, 'final_model.pt')
-
-            # 加载权重
+            ckpt_name = os.path.join(self.checkpoint_path, 'aligned_res50.pt')
+            if not os.path.exists(ckpt_name):
+                ckpt_name = os.path.join(self.checkpoint_path, 'final_model.pt')
             ckpt = torch.load(ckpt_name, map_location='cpu')
-
-            # 自动尝试移除常见的前缀（model. 或 module.）
+            if isinstance(ckpt, dict) and 'state_dict' in ckpt:
+                ckpt = ckpt['state_dict']
+            elif isinstance(ckpt, dict) and 'model' in ckpt:
+                ckpt = ckpt['model']
             try:
                 model.load_state_dict(ckpt)
             except RuntimeError:
-                # 如果直接加载失败，尝试移除 "model." 前缀
-                print("=> Attempting to load by removing 'model.' prefix...")
                 new_ckpt = self.remove_prefix(ckpt, 'model.')
                 try:
                     model.load_state_dict(new_ckpt)
                 except RuntimeError:
-                    # 如果还失败，尝试移除 "module." 前缀
-                    print("=> Attempting to load by removing 'module.' prefix...")
                     new_ckpt = self.remove_prefix(ckpt, 'module.')
                     model.load_state_dict(new_ckpt)
 
         else:
-            raise ValueError('Model {} not supported'.format(model_name))
+            raise ValueError('Model {} not supported. MA 支持: resnet50, vit_base_patch16_224'.format(model_name))
         return wrap_model(model.eval().cuda())
