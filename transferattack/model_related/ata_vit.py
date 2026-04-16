@@ -146,8 +146,21 @@ class ATTENTION_RIGION(torch.nn.Module):
         self.model = self.get_model(model_name)
         self.attribution_generator = LRP(self.model)
 
+    # Safe model registry to avoid eval() with arbitrary strings
+    _MODEL_REGISTRY = {
+        'vit_base_patch16_224': vit_base_patch16_224,
+        'vit_large_patch16_224': vit_large_patch16_224,
+        'deit_base_patch16_224': deit_base_patch16_224,
+        'deit_tiny_patch16_224': deit_tiny_patch16_224,
+    }
+
     def get_model(self, model_name):
-        model = eval(model_name)(pretrained=True).cuda()
+        if model_name not in self._MODEL_REGISTRY:
+            raise ValueError(
+                f"Unknown model '{model_name}'. "
+                f"Supported models: {list(self._MODEL_REGISTRY.keys())}"
+            )
+        model = self._MODEL_REGISTRY[model_name](pretrained=True).cuda()
         model.eval()
         return model
 

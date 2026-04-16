@@ -50,7 +50,7 @@ class MTA(MIFGSM):
             raise ValueError("Please download checkpoints, and put them into the path './path/to/checkpoints'.")
 
         model = models.__dict__['resnet18'](weights='DEFAULT').eval().cuda()
-        info = torch.load(model_path, 'cpu')
+        info = torch.load(model_path, 'cpu', weights_only=True)
         if 'state_dict' in info.keys():  # our models
             state_dict = info['state_dict']
         else:  # Pretrained slightly robust model

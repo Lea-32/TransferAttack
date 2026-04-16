@@ -66,7 +66,7 @@ class MA(Attack):
             ckpt_name = os.path.join(self.checkpoint_path, 'final_model.pt')
             if not os.path.exists(ckpt_name):
                 raise FileNotFoundError(f"Checkpoint 不存在: {ckpt_name}")
-            ckpt = torch.load(ckpt_name, map_location='cpu')
+            ckpt = torch.load(ckpt_name, map_location='cpu', weights_only=True)
             if isinstance(ckpt, dict) and 'state_dict' in ckpt:
                 ckpt = ckpt['state_dict']
             elif isinstance(ckpt, dict) and 'model' in ckpt:
@@ -82,7 +82,7 @@ class MA(Attack):
             ckpt_name = os.path.join(self.checkpoint_path, 'aligned_res50.pt')
             if not os.path.exists(ckpt_name):
                 ckpt_name = os.path.join(self.checkpoint_path, 'final_model.pt')
-            ckpt = torch.load(ckpt_name, map_location='cpu')
+            ckpt = torch.load(ckpt_name, map_location='cpu', weights_only=True)
             if isinstance(ckpt, dict) and 'state_dict' in ckpt:
                 ckpt = ckpt['state_dict']
             elif isinstance(ckpt, dict) and 'model' in ckpt:

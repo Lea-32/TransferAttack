@@ -18,7 +18,7 @@ _logger = logging.getLogger(__name__)
 
 def load_state_dict(checkpoint_path, use_ema=False):
     if checkpoint_path and os.path.isfile(checkpoint_path):
-        checkpoint = torch.load(checkpoint_path, map_location='cpu')
+        checkpoint = torch.load(checkpoint_path, map_location='cpu', weights_only=True)
         state_dict_key = 'state_dict'
         if isinstance(checkpoint, dict):
             if use_ema and 'state_dict_ema' in checkpoint:
@@ -47,7 +47,7 @@ def load_checkpoint(model, checkpoint_path, use_ema=False, strict=True):
 def resume_checkpoint(model, checkpoint_path, optimizer=None, loss_scaler=None, log_info=True):
     resume_epoch = None
     if os.path.isfile(checkpoint_path):
-        checkpoint = torch.load(checkpoint_path, map_location='cpu')
+        checkpoint = torch.load(checkpoint_path, map_location='cpu', weights_only=True)
         if isinstance(checkpoint, dict) and 'state_dict' in checkpoint:
             if log_info:
                 _logger.info('Restoring model state from checkpoint...')

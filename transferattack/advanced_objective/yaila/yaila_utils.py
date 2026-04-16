@@ -24,9 +24,10 @@ class SelectedImagenet(Dataset):
         self.transform = transform
         self._load_csv()
     def _load_csv(self):
-        reader = csv.reader(open(self.selected_images_csv, 'r'))
-        next(reader)
-        self.selected_list = list(reader)
+        with open(self.selected_images_csv, 'r') as csvfile:
+            reader = csv.reader(csvfile)
+            next(reader)
+            self.selected_list = list(reader)
     def __getitem__(self, item):
         target, target_name, image_name = self.selected_list[item]
         image = Image.open(os.path.join(self.imagenet_val_dir, target_name, image_name))
@@ -50,6 +51,8 @@ class SelectedCifar100(Dataset):
         self.data = []
         self.targets = []
         file_path = os.path.join(cifar100_dir, 'test')
+        # WARNING: pickle.load can execute arbitrary code during deserialization.
+        # Only load pickle files from trusted sources.
         with open(file_path, 'rb') as f:
             entry = pickle.load(f, encoding='latin1')
             self.data.append(entry['data'])
@@ -60,9 +63,10 @@ class SelectedCifar100(Dataset):
         self.selected_images_csv = selected_images_csv
         self._load_csv()
     def _load_csv(self):
-        reader = csv.reader(open(self.selected_images_csv, 'r'))
-        next(reader)
-        self.selected_list = list(reader)
+        with open(self.selected_images_csv, 'r') as csvfile:
+            reader = csv.reader(csvfile)
+            next(reader)
+            self.selected_list = list(reader)
     def __getitem__(self, item):
         t_class, t_ind = map(int, self.selected_list[item])
         assert self.targets[t_ind] == t_class, 'Wrong targets in csv file.(line {})'.format(item+1)
@@ -111,7 +115,7 @@ def resnet50_forward(ila, model, x, mid_layer_index, tap):
     x = model[1].relu(x)
     x = model[1].maxpool(x)
     for block_ind in range(4):
-        mid_feats, x = block_forward(x, eval('model[1].layer{}'.format(block_ind + 1)), block_ind + 1)
+        mid_feats, x = block_forward(x, getattr(model[1], 'layer{}'.format(block_ind + 1)), block_ind + 1)
         if tap:
             mid_output[0].append(x.clone())
         if int(mid_layer_index.split('_')[0]) == block_ind + 1:

@@ -148,7 +148,7 @@ class GE_ADVGAN(MIFGSM):
         if not os.path.exists(weight_name):
             raise ValueError("Please download the checkpoint of the 'GE_ADVGAN' from https://drive.google.com/drive/folders/1eF-QF_NjYVQw_bCnBJGxsbsfF1E_Ay7K?usp=drive_link, and put it into the path '{}'.".format(self.checkpoint_path))
         
-        netG.load_state_dict(torch.load(weight_name))
+        netG.load_state_dict(torch.load(weight_name, weights_only=True))
         
         return netG.eval().to(self.device)
 

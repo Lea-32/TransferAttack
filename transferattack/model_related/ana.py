@@ -27,7 +27,7 @@ class ResNet50WithAlign(nn.Module):
                                   base.layer1, base.layer2, base.layer3)
         self.alignment = AlignmentNetCNN(channels=1024)
         if alignment_path is not None:
-            self.alignment.load_state_dict(torch.load(alignment_path)['alignment_state_dict'])
+            self.alignment.load_state_dict(torch.load(alignment_path, weights_only=True)['alignment_state_dict'])
         self.layer4 = base.layer4
         self.avgpool = base.avgpool
         self.fc = base.fc

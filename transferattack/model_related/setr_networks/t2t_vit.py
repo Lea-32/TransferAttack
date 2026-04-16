@@ -183,8 +183,8 @@ def T2t_vit_7(pretrained=False, **kwargs): # adopt performer for tokens to token
     model = T2T_ViT(tokens_type='performer', embed_dim=256, depth=7, num_heads=4, mlp_ratio=2., **kwargs)
     model.default_cfg = default_cfgs['T2t_vit_7']
     if pretrained:
-        checkpoint = torch.load('pretrained_models/71.7_T2T_ViT_7.pth.tar'
-        )
+        checkpoint = torch.load('pretrained_models/71.7_T2T_ViT_7.pth.tar',
+                                weights_only=True)
         model.load_state_dict(checkpoint["state_dict_ema"])
     return model
 
@@ -194,8 +194,8 @@ def T2t_vit_10(pretrained=False, **kwargs): # adopt performer for tokens to toke
     model.default_cfg = default_cfgs['T2t_vit_10']
     if pretrained:
         checkpoint = torch.load('pretrained_models/75.2_T2T_ViT_10.pth.tar',
-                                map_location="cpu"
-                                )
+                                map_location="cpu",
+                                weights_only=True)
         model.load_state_dict(checkpoint["state_dict_ema"])
     return model
 
@@ -205,8 +205,8 @@ def T2t_vit_12(pretrained=False, **kwargs): # adopt performer for tokens to toke
     model.default_cfg = default_cfgs['T2t_vit_12']
     if pretrained:
         checkpoint = torch.load('pretrained_models/76.5_T2T_ViT_12.pth.tar',
-                                map_location="cpu"
-                                )
+                                map_location="cpu",
+                                weights_only=True)
         model.load_state_dict(checkpoint["state_dict_ema"])
     return model
 
@@ -217,8 +217,8 @@ def T2t_vit_14(pretrained=False, **kwargs):  # adopt performer for tokens to tok
     model.default_cfg = default_cfgs['T2t_vit_14']
     if pretrained:
         checkpoint = torch.load('pretrained_models/81.5_T2T_ViT_14.pth.tar',
-                                map_location="cpu"
-                                )
+                                map_location="cpu",
+                                weights_only=True)
         model.load_state_dict(checkpoint["state_dict_ema"])
     return model
 
@@ -228,8 +228,8 @@ def T2t_vit_19(pretrained=False, **kwargs): # adopt performer for tokens to toke
     model.default_cfg = default_cfgs['T2t_vit_19']
     if pretrained:
         checkpoint = torch.load('pretrained_models/81.9_T2T_ViT_19.pth.tar',
-                                map_location="cpu"
-                                )
+                                map_location="cpu",
+                                weights_only=True)
         model.load_state_dict(checkpoint["state_dict_ema"])
     return model
 
@@ -239,8 +239,8 @@ def T2t_vit_24(pretrained=False, **kwargs): # adopt performer for tokens to toke
     model.default_cfg = default_cfgs['T2t_vit_24']
     if pretrained:
         checkpoint = torch.load('pretrained_models/82.3_T2T_ViT_24.pth.tar',
-                                map_location="cpu"
-                                )
+                                map_location="cpu",
+                                weights_only=True)
         model.load_state_dict(checkpoint["state_dict_ema"])
     return model
 
@@ -250,8 +250,8 @@ def T2t_vit_t_14(pretrained=False, **kwargs):  # adopt transformers for tokens t
     model.default_cfg = default_cfgs['T2t_vit_t_14']
     if pretrained:
         checkpoint = torch.load('pretrained_models/81.7_T2T_ViTt_14.pth.tar',
-                                map_location="cpu"
-                                )
+                                map_location="cpu",
+                                weights_only=True)
         model.load_state_dict(checkpoint["state_dict_ema"])
     return model
 
@@ -261,8 +261,8 @@ def T2t_vit_t_19(pretrained=False, **kwargs):  # adopt transformers for tokens t
     model.default_cfg = default_cfgs['T2t_vit_t_19']
     if pretrained:
         checkpoint = torch.load('pretrained_models/82.4_T2T_ViTt_19.pth.tar',
-                                map_location="cpu"
-                                )
+                                map_location="cpu",
+                                weights_only=True)
         model.load_state_dict(checkpoint["state_dict_ema"])
     return model
 
@@ -272,8 +272,8 @@ def T2t_vit_t_24(pretrained=False, **kwargs):  # adopt transformers for tokens t
     model.default_cfg = default_cfgs['T2t_vit_t_24']
     if pretrained:
         if pretrained:
-            checkpoint = torch.load('pretrained_models/82.6_T2T_ViTt_24.pth.tar'
-                                    )
+            checkpoint = torch.load('pretrained_models/82.6_T2T_ViTt_24.pth.tar',
+                                    weights_only=True)
             model.load_state_dict(checkpoint["state_dict_ema"])
     return model
 

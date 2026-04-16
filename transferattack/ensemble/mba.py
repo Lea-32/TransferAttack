@@ -49,7 +49,7 @@ class MBA(MIFGSM):
         else:
             raise ValueError("""Please download checkpoints from 'https://drive.google.com/drive/folders/1rOa4nFGsxrw-30_DJ77X_xqj__vhE_TN', and put them into the path './path/to/checkpoints'.""")
         
-        state_dict = torch.load(model_path)
+        state_dict = torch.load(model_path, weights_only=True)
         mean_model = build_model(state_dict["mean_state_dict"])
         sqmean_model = build_model(state_dict["sqmean_state_dict"])
         mean_model = nn.DataParallel(mean_model)

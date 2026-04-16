@@ -33,7 +33,7 @@ class M3D(MIFGSM):
         netG = GeneratorResnet()
         file_path = "/path/to/checkpoint/m3d/netG_{}_9_{}.pth".format(self.model_name, target_class)
         try:
-            netG.load_state_dict(torch.load(file_path))
+            netG.load_state_dict(torch.load(file_path, weights_only=True))
         except:
             raise FileExistsError(
                 f"No pre-trained generator model found at {file_path}, please visit "

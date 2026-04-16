@@ -52,7 +52,7 @@ class SETR(MIFGSM):
             if model_path.startswith("https://"):
                 src_checkpoint = torch.hub.load_state_dict_from_url(model_path, map_location='cpu')
             else:
-                src_checkpoint = torch.load(model_path, map_location='cpu')
+                src_checkpoint = torch.load(model_path, map_location='cpu', weights_only=True)
 
             # print(src_checkpoint.keys())
             src_model.load_state_dict(src_checkpoint['state_dict'])

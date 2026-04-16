@@ -592,7 +592,7 @@ class LL2S(Attack):
             if "vit" in self.model_name:
                 tensor_filepath = "path/to/vit/global/robust/tokens"
                 robust_tokens = (
-                    torch.load(tensor_filepath)
+                    torch.load(tensor_filepath, weights_only=True)
                     .to(self.device)
                     .unsqueeze(0)
                     .repeat([data.shape[0], 1, 1])

@@ -48,7 +48,7 @@ class DRA(MIFGSM):
         net = pretrainedmodels.__dict__[model_name](num_classes=1000,pretrained='imagenet') 
         net = torch.nn.DataParallel(net).cuda()
 
-        ckpt = torch.load(weight_path)
+        ckpt = torch.load(weight_path, weights_only=True)
         if "model_state_dict" in ckpt:
             net.load_state_dict(ckpt["model_state_dict"])
             if "accuracy" in ckpt:

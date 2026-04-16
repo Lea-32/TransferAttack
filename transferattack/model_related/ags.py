@@ -56,7 +56,7 @@ class AGS(Attack):
             raise ValueError("Please download checkpoints from 'https://github.com/lwmming/AGS', and put them into the path './path/to/checkpoints'.")
         
         model = Basic_SSL_Model(128)
-        model.load_state_dict(torch.load(model_path))
+        model.load_state_dict(torch.load(model_path, weights_only=True))
 
         return model.eval().cuda()
 
