@@ -3,7 +3,7 @@ import torch.nn as nn
 from .sko.GA import GA
 from .sko.DE import DE
 from ..utils import *
-from ..attack import Attack
+from ..attack import BaseAttack
 from types import MethodType, FunctionType
 import warnings
 import sys
@@ -14,7 +14,7 @@ import multiprocessing
 
 import warnings 
 
-class LPM(Attack):
+class LPM(BaseAttack):
     """
      LPM (Learnable Patch-wise Masks)
     'Boosting Adversarial Transferability with Learnable Patch-wise Masks (IEEE MM 2023)'(https://ieeexplore.ieee.org/abstract/document/10251606)

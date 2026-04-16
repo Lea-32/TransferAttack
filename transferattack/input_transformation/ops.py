@@ -5,9 +5,9 @@ import torch.nn.functional as F
 from torchvision.transforms import functional as TFF
 
 from ..utils import *
-from ..attack import Attack
+from ..attack import BaseAttack
 
-class OPS(Attack):
+class OPS(BaseAttack):
     ''' 
      OPS (Operator-Perturbation-based Stochastic optimization) Attack
     'Boosting Adversarial Transferability through Augmentation in Hypothesis Space (CVPR 2025)'(https://openaccess.thecvf.com/content/CVPR2025/papers/Guo_Boosting_Adversarial_Transferability_through_Augmentation_in_Hypothesis_Space_CVPR_2025_paper.pdf)

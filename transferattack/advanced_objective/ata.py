@@ -1,10 +1,10 @@
 import torch
 
 from ..utils import *
-from ..attack import Attack
+from ..attack import BaseAttack
 import torch.nn as nn
 
-class ATA(Attack):
+class ATA(BaseAttack):
     """
     ATA Attack
     'Boosting the Transferability of Adversarial Samples via Attention (CVPR 2020) (https://openaccess.thecvf.com/content_CVPR_2020/papers/Wu_Boosting_the_Transferability_of_Adversarial_Samples_via_Attention_CVPR_2020_paper.pdf)'

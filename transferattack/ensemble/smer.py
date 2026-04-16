@@ -4,10 +4,10 @@ import torch.nn.functional as F
 
 import numpy as np
 from ..utils import *
-from ..attack import Attack
+from ..attack import BaseAttack
 
 
-class SMER(Attack):
+class SMER(BaseAttack):
     """
     SMER Attack
     'Ensemble Diversity Facilitates Adversarial Transferability (CVPR 2024)'

@@ -1,6 +1,6 @@
 import torch
 from ..utils import *
-from ..attack import Attack
+from ..attack import BaseAttack
 
 import torch.nn as nn
 import torch.nn.functional as F
@@ -8,7 +8,7 @@ from torchvision.models.resnet import resnet50 as regular_resnet50
 
 mid_outputs = []
 
-class AGS(Attack):
+class AGS(BaseAttack):
     """
     AGS Attack
     'AGS: Affordable and Generalizable Substitute Training for Transferable Adversarial Attack (AAAI 2024)'(https://ojs.aaai.org/index.php/AAAI/article/view/28365)

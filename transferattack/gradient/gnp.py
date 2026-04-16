@@ -1,8 +1,8 @@
 import torch
 from ..utils import *
-from ..attack import Attack
+from ..attack import BaseAttack
 
-class GNP(Attack):
+class GNP(BaseAttack):
     """
     GNP (Gradient Norm Penalty)
     'GNP Attack: Transferable Adversarial Examples via Gradient Norm Penalty (ICIP 2023)' (https://ieeexplore.ieee.org/abstract/document/10223158)

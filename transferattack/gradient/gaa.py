@@ -2,9 +2,9 @@ import torch
 import torch.nn as nn
 
 from ..utils import *
-from ..attack import Attack
+from ..attack import BaseAttack
 
-class GAA(Attack):
+class GAA(BaseAttack):
     """
     Gradient Aggregation Attack (GAA) Method
     

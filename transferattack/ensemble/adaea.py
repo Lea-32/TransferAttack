@@ -4,10 +4,10 @@ import torch.nn.functional as F
 
 import numpy as np
 from ..utils import *
-from ..attack import Attack
+from ..attack import BaseAttack
 
 
-class AdaEA(Attack):
+class AdaEA(BaseAttack):
     """
     AdaEA Attack
     'An Adaptive Model Ensemble Adversarial Attack for Boosting Adversarial Transferability (ICCV 2023)'(https://arxiv.org/abs/2308.02897)

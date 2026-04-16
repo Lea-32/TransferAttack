@@ -4,12 +4,12 @@ from torch import nn, Tensor
 from torchvision.transforms import InterpolationMode
 
 from ..utils import *
-from ..attack import Attack
+from ..attack import BaseAttack
 from typing import Callable
 import scipy.stats as st
 
 
-class CFM(Attack):
+class CFM(BaseAttack):
     """
     Clean Feature Mixup Attack
     'Introducing Competition to Boost the Transferability of Targeted Adversarial Examples through Clean Feature Mixup (CVPR 2023) (https://arxiv.org/abs/2305.14846)'

@@ -1,9 +1,9 @@
 import torch
 
 from ..utils import *
-from ..attack import Attack
+from ..attack import BaseAttack
 
-class TAIG(Attack):
+class TAIG(BaseAttack):
     """
     TAIG Attack
     'Transferable Adversarial Attack based on Integrated Gradients'(https://arxiv.org/abs/2205.13152)

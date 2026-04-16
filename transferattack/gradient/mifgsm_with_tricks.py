@@ -1,7 +1,7 @@
 import torch
 
 from ..utils import *
-from ..attack import Attack
+from ..attack import BaseAttack
 
 """
 Results of the MI-FGSM with tricks on this library:
@@ -13,7 +13,7 @@ Results of the MI-FGSM with tricks on this library:
 """
 
 
-class RGMIFGSM(Attack):
+class RGMIFGSM(BaseAttack):
     """
     RGI-FGSM Attack
     'Bag of tricks to boost the adversarial transferability'(https://arxiv.org/abs/2401.08734)
@@ -99,7 +99,7 @@ class RGMIFGSM(Attack):
         return delta.detach()
 
 
-class DualMIFGSM(Attack):
+class DualMIFGSM(BaseAttack):
     """
     MI-FGSM Attack with dual example
     'Bag of tricks to boost the adversarial transferability'(https://arxiv.org/abs/2401.08734)
@@ -178,7 +178,7 @@ class DualMIFGSM(Attack):
         return delta_dual.detach()
 
 
-class Ens_FGSM_MIFGSM(Attack):
+class Ens_FGSM_MIFGSM(BaseAttack):
     """
     MI-FGSM Attack with the ensemble of dual example
     'Bag of tricks to boost the adversarial transferability'(https://arxiv.org/abs/2401.08734)

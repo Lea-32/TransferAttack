@@ -1,9 +1,9 @@
 import torch
 
 from ..utils import *
-from ..attack import Attack
+from ..attack import BaseAttack
 
-class GIFGSM(Attack):
+class GIFGSM(BaseAttack):
     """
     GI-FGSM Attack
     'Boosting the Transferability of Adversarial Attacks with Global Momentum Initialization'(https://arxiv.org/abs/2211.11236)

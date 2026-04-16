@@ -1,8 +1,8 @@
 import torch
 from ..utils import *
-from ..attack import Attack
+from ..attack import BaseAttack
 
-class PGN(Attack):
+class PGN(BaseAttack):
     """
     PGN (Penalizing Gradient Norm)
     'Boosting Adversarial Transferability by Achieving Flat Local Maxima (NeurIPS 2023)' (https://arxiv.org/abs/2306.05225)

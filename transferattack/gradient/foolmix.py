@@ -4,9 +4,9 @@ import torch.nn.functional as F
 import time
 
 from ..utils import *
-from ..attack import Attack
+from ..attack import BaseAttack
 
-class Foolmix(Attack):
+class Foolmix(BaseAttack):
     """
     Foolmix Attack Algorithm
     'Foolmix: Strengthen the Transferability of Adversarial Examples by Dual-Blending and Direction Update Strategy. (TIFS 2024)' (https://ieeexplore.ieee.org/document/10508615)

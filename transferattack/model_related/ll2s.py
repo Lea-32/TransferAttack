@@ -9,7 +9,7 @@ from timm.models.vision_transformer import (
     VisionTransformer,
 )
 
-from ..attack import Attack
+from ..attack import BaseAttack
 
 # Hyperparameter mappings for different model types
 hyper_param_map = {
@@ -392,7 +392,7 @@ op_list = [
 ]
 
 
-class LL2S(Attack):
+class LL2S(BaseAttack):
     """
     LL2S Attack
     Based on 'Harnessing the Computation Redundancy in ViTs to Boost Adversarial Transferability'

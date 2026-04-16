@@ -1,12 +1,12 @@
 import torch
 
 from ..utils import *
-from ..attack import Attack
+from ..attack import BaseAttack
 import scipy.stats as st
 from torch.autograd import Variable 
 import torch.nn.functional as F
 
-class FGSRA(Attack):
+class FGSRA(BaseAttack):
     """
     FGSRA(Frequency-Guided Sample Relevance Attack)
     'Improving Adversarial Transferability via Frequency-Guided Sample Relevance Attack (CIKM2024)'(https://dl.acm.org/doi/10.1145/3627673.3679858) 

@@ -1,10 +1,10 @@
 import torch
 
 from ..utils import *
-from ..attack import Attack
+from ..attack import BaseAttack
 import math
 
-class AIFGTM(Attack):
+class AIFGTM(BaseAttack):
     """
     AI-FGTM Attack
     Making Adversarial Examples More Transferable and Indistinguishable (AAAI 2022) (https://arxiv.org/abs/2007.03838)

@@ -1,10 +1,10 @@
 import torch
 import torch.nn.functional as F
 from ..utils import *
-from ..attack import Attack
+from ..attack import BaseAttack
 import scipy.stats as st
 
-class LOGIT(Attack):
+class LOGIT(BaseAttack):
     """
     Logit Attack
     'On Success and Simplicity: A Second Look at Transferable Targeted Attacks (NeurIPS 2021)'(https://arxiv.org/abs/2012.11207)

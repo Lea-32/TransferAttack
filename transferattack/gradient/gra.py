@@ -1,9 +1,9 @@
 import torch
 
 from ..utils import *
-from ..attack import Attack
+from ..attack import BaseAttack
 
-class GRA(Attack):
+class GRA(BaseAttack):
     """
     GRA Attack
     'Boosting Adversarial Transferability via Gradient Relevance Attack (ICCV 2023)'(https://openaccess.thecvf.com/content/ICCV2023/papers/Zhu_Boosting_Adversarial_Transferability_via_Gradient_Relevance_Attack_ICCV_2023_paper.pdf)

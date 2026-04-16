@@ -1,9 +1,9 @@
 import torch
 from ..utils import *
-from ..attack import Attack
+from ..attack import BaseAttack
 import torch.nn as nn
 
-class MEF(Attack):
+class MEF(BaseAttack):
     """
     MEF (Maximin Expected Flatness)
     'Boosting Adversarial Transferability with Low-Cost Optimization via Maximin Expected Flatness' (https://arxiv.org/abs/2405.16181)

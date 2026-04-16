@@ -1,9 +1,9 @@
 import torch
 
 from ..utils import *
-from ..attack import Attack
+from ..attack import BaseAttack
 
-class PCIFGSM(Attack):
+class PCIFGSM(BaseAttack):
     """
     PCIFGSM Attack
     'Adversarial Attack Based on Prediction-Correction'(https://arxiv.org/abs/2306.01809)

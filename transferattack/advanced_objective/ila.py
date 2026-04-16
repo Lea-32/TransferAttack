@@ -1,7 +1,7 @@
 import torch
 
 from ..utils import *
-from ..attack import Attack
+from ..attack import BaseAttack
 import torch.nn as nn
 mid_outputs = None
 
@@ -18,7 +18,7 @@ class Proj_Loss(torch.nn.Module):
         return proj_loss
 
 
-class ILA(Attack):
+class ILA(BaseAttack):
     """
     ILA (Intermediate Level Attack)
     'Enhancing Adversarial Example Transferability with an Intermediate Level Attack (ICCV 2019)'(https://arxiv.org/abs/1907.10823)

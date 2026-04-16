@@ -1,7 +1,7 @@
 from ..utils import *
-from ..attack import Attack
+from ..attack import BaseAttack
 
-class CWA(Attack):
+class CWA(BaseAttack):
     """
     CWA Attack
     'Rethinking Model Ensemble in Transfer-based Adversarial Attacks'(https://arxiv.org/abs/2303.09105)

@@ -1,11 +1,11 @@
 import torch
 
 from ..utils import *
-from ..attack import Attack
+from ..attack import BaseAttack
 import torch.nn as nn
 mid_outputs = []
 
-class TAP(Attack):
+class TAP(BaseAttack):
     """
     TAP Attack
     'Transferable Adversarial Perturbations (ECCV 2018)'(https://openaccess.thecvf.com/content_ECCV_2018/papers/Bruce_Hou_Transferable_Adversarial_Perturbations_ECCV_2018_paper.pdf)

@@ -1,6 +1,6 @@
 # example bash: python main.py --attack=ghost_network
 from ..utils import *
-from ..attack import Attack
+from ..attack import BaseAttack
 from .ghost_networks.resnet import ghost_resnet101, ghost_resnet152
 from ..gradient.mifgsm import MIFGSM
 from ..gradient.nifgsm import NIFGSM

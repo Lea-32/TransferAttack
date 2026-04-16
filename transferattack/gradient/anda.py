@@ -3,10 +3,10 @@ import math
 from torch.nn import functional as F
 
 from ..utils import *
-from ..attack import Attack
+from ..attack import BaseAttack
 
 
-class ANDA(Attack):
+class ANDA(BaseAttack):
     """
     ANDA Attack
     'Strong Transferable Adversarial Attacks via Ensembled Asymptotically Normal Distribution Learning (CVPR 2024)'(https://openaccess.thecvf.com/content/CVPR2024/papers/Fang_Strong_Transferable_Adversarial_Attacks_via_Ensembled_Asymptotically_Normal_Distribution_Learning_CVPR_2024_paper.pdf)
