@@ -259,8 +259,8 @@ class StyleAugmentor(nn.Module):
         else:
             raise ValueError("Please download checkpoints from 'https://drive.google.com/drive/folders/1NkD91e3NbSQlZUflc63kgjqlgXIhzcxg?usp=sharing', and put them into the path './path/to/checkpoints'.")
         
-        checkpoint_ghiasi = torch.load(checkpoint_ghiasi_name)
-        checkpoint_embeddings = torch.load(checkpoint_embeddings_name)
+        checkpoint_ghiasi = torch.load(checkpoint_ghiasi_name, weights_only=True)
+        checkpoint_embeddings = torch.load(checkpoint_embeddings_name, weights_only=True)
         
         # load weights for ghiasi and stylePredictor, and mean / covariance for the embedding distribution:
         self.ghiasi.load_state_dict(checkpoint_ghiasi['state_dict_ghiasi'],strict=False)

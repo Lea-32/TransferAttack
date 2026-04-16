@@ -47,7 +47,7 @@ class LTP(Attack):
         
         model = GeneratorResnet(gen_dropout=0.0, data_dim='high')
  
-        checkpoint = torch.load(model_path)
+        checkpoint = torch.load(model_path, weights_only=True)
         model.load_state_dict(checkpoint['model_state_dict'])
 
         return model.eval().cuda()

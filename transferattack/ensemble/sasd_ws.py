@@ -47,7 +47,7 @@ class SASD_WS(MIFGSM):
             raise ValueError("Please download the checkpoint of the 'resnet50_SASD_Model' from 'https://drive.google.com/drive/folders/1CsNN53GYy9nFcJdSkS5Pcy_faisMDRRh', and put it into the path '{}'.".format(self.checkpoint_path))
         
         model = models.__dict__[model_name](weights="DEFAULT")
-        weight = torch.load(weight_path, map_location='cpu')
+        weight = torch.load(weight_path, map_location='cpu', weights_only=True)
         model.load_state_dict(weight)
         sasd_model = model.eval().cuda()
 

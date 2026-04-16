@@ -74,11 +74,11 @@ def main():
                                              target_class=target_class, eval=args.eval)
                     new_dataloader = torch.utils.data.DataLoader(new_dataset, batch_size=args.batchsize, shuffle=False,
                                                                  num_workers=4)
-                    asr += eval(model, new_dataloader, True)
+                    asr += evaluate(model, new_dataloader, True)
                 asr /= 10
 
             else:
-                asr = eval(model, dataloader, args.targeted)
+                asr = evaluate(model, dataloader, args.targeted)
             print(f'{model_name}: {asr:.1f}')
             res += f' {asr:.1f} |'
 
@@ -87,7 +87,7 @@ def main():
             f.write(args.output_dir + res + '\n')
 
 
-def eval(model, dataloader, is_targeted):
+def evaluate(model, dataloader, is_targeted):
     correct, total = 0, 0
     for images, labels, _ in dataloader:
         if is_targeted:

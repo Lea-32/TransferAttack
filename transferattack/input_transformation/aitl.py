@@ -119,9 +119,9 @@ def get_transform_list(checkpoint_path, images):
         raise ValueError("Please download checkpoints from 'https://drive.google.com/drive/folders/14unrFNAkglh4y-Jsas29WOpmMydt8-bm?usp=sharing',\
                           and put them into the path './path/to/checkpoints'.")
     
-    encoder_model.load_state_dict(torch.load(encoder_pth_path))
-    decoder_model.load_state_dict(torch.load(decoder_pth_path))
-    predictor_model.load_state_dict(torch.load(predictor_pth_path))
+    encoder_model.load_state_dict(torch.load(encoder_pth_path, weights_only=True))
+    decoder_model.load_state_dict(torch.load(decoder_pth_path, weights_only=True))
+    predictor_model.load_state_dict(torch.load(predictor_pth_path, weights_only=True))
 
     encoder_model = encoder_model.eval().cuda()
     decoder_model = decoder_model.eval().cuda()

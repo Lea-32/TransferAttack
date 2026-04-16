@@ -57,7 +57,7 @@ class LGV(MIFGSM):
         list_models = []
         for path in paths_models:
             model = resnet50()
-            model.load_state_dict(torch.load(path)['state_dict'])
+            model.load_state_dict(torch.load(path, weights_only=True)['state_dict'])
             model = wrap_model(model.eval().cuda())
             list_models.append(model)
 

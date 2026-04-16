@@ -33,7 +33,7 @@ class TTP(MIFGSM):
         # file_path = "/path/to/checkpoint/ttp/netG_{}_IN_19_{}.pth".format(self.model_name, target_class)
         file_path = "/home/zeyuan/My-Adv/TransferAttack/checkpoint/ttp/netG_{}_IN_19_{}.pth".format(self.model_name, target_class)
         try:
-            netG.load_state_dict(torch.load(file_path))
+            netG.load_state_dict(torch.load(file_path, weights_only=True))
         except:
             raise FileExistsError(
                 f"No pre-trained generator model found at {file_path}, please visit "

@@ -42,7 +42,7 @@ class ADA(MIFGSM):
         netG = AttackGenerator(base_channel_dim=64, input_img_channel=3, z_channel=16,
                                                  deeper_layer=False, num_class=1000, last_dim=3)
         try:
-            netG.load_state_dict(torch.load('./surrogate_inception_v3.pth'))
+            netG.load_state_dict(torch.load('./surrogate_inception_v3.pth', weights_only=True))
         except:
             print('No pre-trained generator model found, please visit https://github.com/wkim97/ADA to download model')
 

@@ -147,7 +147,7 @@ class PAM(MIFGSM):
 
             # Load the semantic_predictor.pth
             predictor = SemanticPredictor().to(self.device)
-            predictor.load_state_dict(torch.load(os.path.join(checkpoint_dir, 'semantic_predictor.pth')))
+            predictor.load_state_dict(torch.load(os.path.join(checkpoint_dir, 'semantic_predictor.pth'), weights_only=True))
             return predictor
         
         # Load the dataset

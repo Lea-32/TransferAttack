@@ -46,7 +46,7 @@ class ATTA(MIFGSM):
         if not os.path.exists(weight_name):
             raise ValueError("Please download the checkpoint of the 'ATTA_Model' from 'https://drive.google.com/drive/folders/1QrL3MGuQH-Jx4jwZ5CWO8zHBtquUQkBZ?usp=sharing', and put it into the path '{}'.".format(self.checkpoint_path))
 
-        atta_model.load_state_dict(torch.load(weight_name))
+        atta_model.load_state_dict(torch.load(weight_name, weights_only=True))
 
         return atta_model.eval().to(self.device)
 

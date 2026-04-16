@@ -148,7 +148,7 @@ class CDTP(MIFGSM):
     def load_Gmodel(self):
         netG = GeneratorResnet()
         try:
-            netG.load_state_dict(torch.load('/netG.pth'))
+            netG.load_state_dict(torch.load('/netG.pth', weights_only=True))
         except:
             print('No pre-trained generator model found, please visit https://github.com/Muzammal-Naseer/CDA to download model')
         netG.to(self.device)
