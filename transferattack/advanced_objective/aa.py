@@ -3,10 +3,10 @@ import json
 import random
 
 from ..utils import *
-from ..attack import Attack
+from ..attack import BaseAttack
 import torch.nn as nn
 
-class AA(Attack):
+class AA(BaseAttack):
     """
     Activation Attack
     'Feature Space Perturbations Yield More Transferable Adversarial Examples (CVPR 2019) (https://openaccess.thecvf.com/content_CVPR_2019/papers/Inkawhich_Feature_Space_Perturbations_Yield_More_Transferable_Adversarial_Examples_CVPR_2019_paper.pdf)'

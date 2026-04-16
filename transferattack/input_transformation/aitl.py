@@ -1,14 +1,14 @@
 import torch
 import random
 import numpy as np
-from ..attack import Attack
+from ..attack import BaseAttack
 import torch.nn.functional as F
 import torch.nn as nn
 import torchvision.models as models
 from torchvision import transforms
 import os
 
-class AITL(Attack):
+class AITL(BaseAttack):
     """
     AITL Attack
     'Adaptive Image Transformations for Transfer-based Adversarial Attack (ECCV 2022)'(https://arxiv.org/pdf/2111.13844.pdf)

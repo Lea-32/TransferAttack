@@ -1,9 +1,9 @@
 import torch
 from ..utils import *
-from ..attack import Attack
+from ..attack import BaseAttack
 import torch.nn.functional as F
 
-class PIFGSM(Attack):
+class PIFGSM(BaseAttack):
     """
     PI-FGSM Attack
     'Patch-wise Attack for Fooling Deep Neural Network (ECCV 2020)'(https://arxiv.org/abs/2007.06765)

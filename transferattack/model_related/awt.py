@@ -1,9 +1,9 @@
 import torch
 from ..utils import *
-from ..attack import Attack
+from ..attack import BaseAttack
 
 
-class AWT(Attack):
+class AWT(BaseAttack):
     """
     AWT Attack
     'Enhancing Adversarial Transferability with Adversarial Weight Tuning (AAAI 2025)'(https://ojs.aaai.org/index.php/AAAI/article/view/32203/34358)

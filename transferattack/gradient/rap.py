@@ -1,9 +1,9 @@
 import torch
 
 from ..utils import *
-from ..attack import Attack
+from ..attack import BaseAttack
 
-class RAP(Attack):
+class RAP(BaseAttack):
     """
     RAP Attack
     'Boosting the Transferability of Adversarial Attacks with Reverse Adversarial Perturbation (NeurIPS 2022)'(https://arxiv.org/abs/2210.05968)

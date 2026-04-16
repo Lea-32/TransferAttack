@@ -1,9 +1,9 @@
 import torch
 
 from ..utils import *
-from ..attack import Attack
+from ..attack import BaseAttack
 
-class IFGSSM(Attack):
+class IFGSSM(BaseAttack):
     """
     I-FGSSM Attack
     'Staircase Sign Method for Boosting Adversarial Attacks'(https://arxiv.org/abs/2104.09722)

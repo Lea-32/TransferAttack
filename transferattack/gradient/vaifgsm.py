@@ -1,9 +1,9 @@
 import torch
 
 from ..utils import *
-from ..attack import Attack
+from ..attack import BaseAttack
 
-class VAIFGSM(Attack):
+class VAIFGSM(BaseAttack):
     """
     VA-I-FGSM Attack
     'Improving Transferability of Adversarial Examples with Virtual Step and Auxiliary Gradients (IJCAI 2022)'(https://www.ijcai.org/proceedings/2022/0227.pdf)

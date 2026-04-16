@@ -1,9 +1,9 @@
 import torch
 
 from ..utils import *
-from ..attack import Attack
+from ..attack import BaseAttack
 
-class MA(Attack):
+class MA(BaseAttack):
     """
     MA Attack
     'Improving Adversarial Transferability via Model Alignment (ECCV 2024)'(https://arxiv.org/abs/2311.18495)

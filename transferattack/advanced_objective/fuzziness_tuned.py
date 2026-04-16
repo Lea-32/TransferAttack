@@ -1,9 +1,9 @@
 import torch
 import torch.nn.functional as F
 from ..utils import *
-from ..attack import Attack
+from ..attack import BaseAttack
 
-class Fuzziness_Tuned(Attack):
+class Fuzziness_Tuned(BaseAttack):
     """
     Fuzziness_Tuned Attack
     'Fuzziness-tuned: Improving the Transferability of Adversarial Examples'(https://arxiv.org/abs/2303.10078)

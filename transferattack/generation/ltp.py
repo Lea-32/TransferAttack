@@ -2,9 +2,9 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 from ..utils import *
-from ..attack import Attack
+from ..attack import BaseAttack
 
-class LTP(Attack):
+class LTP(BaseAttack):
     """
     LTP Attack
     'Learning transferable adversarial perturbations (NeurIPS 2021)'(https://proceedings.neurips.cc/paper/2021/hash/7486cef2522ee03547cfb970a404a874-Abstract.html)

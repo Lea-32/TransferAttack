@@ -1,9 +1,9 @@
 import torch
 
 from ..utils import *
-from ..attack import Attack
+from ..attack import BaseAttack
 
-class VMIFGSM(Attack):
+class VMIFGSM(BaseAttack):
     """
     VMI-FGSM Attack
     'Enhancing the transferability of adversarial attacks through variance tuning (CVPR 2021)'(https://arxiv.org/abs/2103.15571)

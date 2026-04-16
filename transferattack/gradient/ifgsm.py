@@ -1,9 +1,9 @@
 import torch
 
 from ..utils import *
-from ..attack import Attack
+from ..attack import BaseAttack
 
-class IFGSM(Attack):
+class IFGSM(BaseAttack):
     """
     I-FGSM Attack
     'Adversarial Examples in the Physical World (ICLR 2017)'(https://arxiv.org/abs/1607.02533)

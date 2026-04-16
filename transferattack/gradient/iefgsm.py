@@ -1,9 +1,9 @@
 import torch
 
 from ..utils import *
-from ..attack import Attack
+from ..attack import BaseAttack
 
-class IEFGSM(Attack):
+class IEFGSM(BaseAttack):
     """
     IE-FGSM Attack
     'Boosting Transferability of Adversarial Example via an Enhanced Euler's Method (ICASSP 2023)'(https://ieeexplore.ieee.org/stamp/stamp.jsp?tp=&arnumber=10096558)

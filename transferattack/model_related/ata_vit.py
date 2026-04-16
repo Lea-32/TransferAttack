@@ -4,13 +4,13 @@ import cv2
 import random
 import tqdm
 from ..utils import *
-from ..attack import Attack
+from ..attack import BaseAttack
 from .ata_vit_utils.Transformer_Explainability.samples.CLS2IDX import CLS2IDX
 from .ata_vit_utils.Transformer_Explainability.baselines.ViT.ViT_LRP import *
 from .ata_vit_utils.Transformer_Explainability.baselines.ViT.ViT_explanation_generator import LRP
 
 
-class ATA_ViT(Attack):
+class ATA_ViT(BaseAttack):
     """
     ATA Attack
     'Generating Transferable Adversarial Examples against Vision Transformers (ACM-MM 2022)'(https://dl.acm.org/doi/abs/10.1145/3503161.3547989)

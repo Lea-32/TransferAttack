@@ -4,7 +4,7 @@ import torch
 import random
 from PIL import ImageOps
 from ..utils import *
-from ..attack import Attack
+from ..attack import BaseAttack
 from torchvision import transforms
 import torch.nn.functional as F
 import torchvision.transforms as transforms
@@ -387,7 +387,7 @@ op_list = [identity, #0
 #op_list = [vertical_shift, horizontal_shift, vertical_flip, horizontal_flip, rotate180, scale, add_noise]
 
 
-class L2T(Attack):
+class L2T(BaseAttack):
     """
     L2T Attack
     'Learning to Transform Dynamically for Better Adversarial Transferability'(https://arxiv.org/abs/2405.14077)

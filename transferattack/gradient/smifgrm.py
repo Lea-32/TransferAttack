@@ -2,9 +2,9 @@ import torch
 import torch.nn.functional as F
 
 from ..utils import *
-from ..attack import Attack
+from ..attack import BaseAttack
 
-class SMIFGRM(Attack):
+class SMIFGRM(BaseAttack):
     """
     SMI-FGRM Attack
     'Sampling-based Fast Gradient Rescaling Method for Highly Transferable Adversarial Attacks'(https://arxiv.org/abs/2307.02828)

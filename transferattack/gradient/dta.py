@@ -1,9 +1,9 @@
 import torch
 
 from ..utils import *
-from ..attack import Attack
+from ..attack import BaseAttack
 
-class DTA(Attack):
+class DTA(BaseAttack):
     """
     DTA Attack
     'Improving the Transferability of Adversarial Examples via Direction Tuning'(https://arxiv.org/abs/2303.15109)

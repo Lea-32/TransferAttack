@@ -1,9 +1,9 @@
 import torch
 
 from ..utils import *
-from ..attack import Attack
+from ..attack import BaseAttack
 
-class ENS(Attack):
+class ENS(BaseAttack):
     """
     ENS Attack
     'Delving into Transferable Adversarial Examples and Black-box Attacks (ICLR 2017)'(https://arxiv.org/abs/1611.02770)

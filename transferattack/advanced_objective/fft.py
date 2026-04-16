@@ -1,7 +1,7 @@
 import torch
 
 from ..utils import *
-from ..attack import Attack
+from ..attack import BaseAttack
 import torch.nn.functional as F
 import scipy.stats as st
 
@@ -9,7 +9,7 @@ from torch.nn.modules.module import Module
 
 mid_outputs = None
 
-class FFT(Attack):
+class FFT(BaseAttack):
     """
     FFT (Feature space fine-tuning)
     'Enhancing Targeted Transferability via Feature Space Fine-tuning (ICASSP 2024)'(https://arxiv.org/abs/2401.02727)

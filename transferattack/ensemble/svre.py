@@ -3,9 +3,9 @@ import torch.nn as nn
 
 import numpy as np
 from ..utils import *
-from ..attack import Attack
+from ..attack import BaseAttack
 
-class SVRE(Attack):
+class SVRE(BaseAttack):
     """
     SVRE Attack
     'Stochastic variance reduced ensemble adversarial attack for boosting the adversarial transferability (CVPR 2022)'(https://openaccess.thecvf.com/content/CVPR2022/papers/Xiong_Stochastic_Variance_Reduced_Ensemble_Adversarial_Attack_for_Boosting_the_Adversarial_CVPR_2022_paper.pdf)

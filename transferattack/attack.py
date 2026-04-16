@@ -1,3 +1,5 @@
+from abc import ABC, abstractmethod
+
 import torch
 import torch.nn as nn
 
@@ -13,9 +15,16 @@ from .utils import *
     5. 更新扰动：更新扰动，如FGSM，PGD，等等
 '''
 
-class Attack(object):
+class Attack(ABC):
     """
-    Base class for all attacks.
+    Abstract base class for all attacks.
+
+    Subclasses must implement the following abstract methods:
+        - load_model: Load and return the surrogate model.
+        - forward_pass: Perform forward pass and return logits.
+        - compute_gradient: Compute and return gradient of the loss w.r.t. the perturbation.
+        - compute_momentum: Compute and return updated momentum.
+        - update_perturbation: Update and return the adversarial perturbation.
     """
     def __init__(self, attack, model_name, epsilon, targeted, random_start, norm, loss, device=None):
         """
@@ -44,6 +53,176 @@ class Attack(object):
         else:
             self.device = next(self.model.parameters()).device if device is None else device
         self.loss = self.loss_function(loss)
+
+    @abstractmethod
+    def load_model(self, model_name):
+        """
+        Load and return the surrogate model.
+
+        Arguments:
+            model_name (str/list): the name of surrogate model in model_list in utils.py
+
+        Returns:
+            model (torch.nn.Module): the surrogate model
+        """
+        pass
+
+    @abstractmethod
+    def forward_pass(self, data, delta, momentum):
+        """
+        Perform the forward pass: transform input data and return logits.
+
+        Arguments:
+            data: (N, C, H, W) tensor for input images
+            delta: (N, C, H, W) tensor for adversarial perturbation
+            momentum: the current momentum value
+
+        Returns:
+            logits: the model output logits
+        """
+        pass
+
+    @abstractmethod
+    def compute_gradient(self, loss, delta, **kwargs):
+        """
+        Compute and return gradient of the loss w.r.t. the perturbation.
+
+        Arguments:
+            loss: the computed loss value
+            delta: (N, C, H, W) tensor for adversarial perturbation
+
+        Returns:
+            grad: the computed gradient
+        """
+        pass
+
+    @abstractmethod
+    def compute_momentum(self, grad, momentum, **kwargs):
+        """
+        Compute and return updated momentum.
+
+        Arguments:
+            grad: the computed gradient
+            momentum: the current momentum value
+
+        Returns:
+            momentum: the updated momentum
+        """
+        pass
+
+    @abstractmethod
+    def update_perturbation(self, delta, data, grad, alpha, **kwargs):
+        """
+        Update and return the adversarial perturbation.
+
+        Arguments:
+            delta: (N, C, H, W) tensor for adversarial perturbation
+            data: (N, C, H, W) tensor for input images
+            grad: the gradient or momentum used for the update
+            alpha: the step size
+
+        Returns:
+            delta: the updated perturbation
+        """
+        pass
+
+    def forward(self, data, label, **kwargs):
+        """
+        The general attack procedure
+
+        Arguments:
+            data (N, C, H, W): tensor for input images
+            labels (N,): tensor for ground-truth labels if untargetd
+            labels (2,N): tensor for [ground-truth, targeted labels] if targeted
+        """
+        if self.targeted:
+            assert len(label) == 2
+            label = label[1] # the second element is the targeted label tensor
+        data = data.clone().detach().to(self.device)
+        label = label.clone().detach().to(self.device)
+
+        # Initialize adversarial perturbation
+        delta = self.init_delta(data)
+
+        momentum = 0
+        for _ in range(self.epoch):
+            # Obtain the output
+            # 先把 data+delta 通过 transform（可应用输入变换），再通过get_logits得到输出
+            logits = self.forward_pass(data, delta, momentum)
+
+            # Calculate the loss
+            loss = self.get_loss(logits, label)
+
+            # Calculate the gradients
+            grad = self.compute_gradient(loss, delta)
+
+            # Calculate the momentum
+            momentum = self.compute_momentum(grad, momentum)
+
+            # Update adversarial perturbation
+            # 用动量或梯度更新delta并做投影约束
+            delta = self.update_perturbation(delta, data, momentum, self.alpha)
+
+        # 返回扰动delta
+        return delta.detach()
+
+    def get_logits(self, x, **kwargs):
+        """
+        The inference stage, which should be overridden when the attack need to change the models (e.g., ensemble-model attack, ghost, etc.) or the input (e.g. DIM, SIM, etc.)
+        """
+        return self.model(x)
+
+    def get_loss(self, logits, label):
+        """
+        The loss calculation, which should be overrideen when the attack change the loss calculation (e.g., ATA, etc.)
+        """
+        # Calculate the loss
+        # 区分是否是目标攻击，如果是目标攻击通常需要最小化木星对目标类的loss，通过对loss取负把统一的loss变成目标攻击的目标
+        # 否则通常需要最大化对非目标类的loss，样本分类错误
+        return -self.loss(logits, label) if self.targeted else self.loss(logits, label)
+
+    def init_delta(self, data, **kwargs):
+        delta = torch.zeros_like(data).to(self.device)
+        if self.random_start:
+            if self.norm == 'linfty':
+                delta.uniform_(-self.epsilon, self.epsilon)
+            else:
+                delta.normal_(-self.epsilon, self.epsilon)
+                d_flat = delta.view(delta.size(0), -1)
+                n = d_flat.norm(p=2, dim=-1).view(delta.size(0), 1, 1, 1)
+                r = torch.zeros_like(data).uniform_(0,1).to(self.device)
+                delta *= r/n*self.epsilon
+            delta = clamp(delta, img_min-data, img_max-data)
+        delta.requires_grad = True
+        return delta
+
+    def loss_function(self, loss):
+        """
+        Get the loss function
+        """
+        if loss == 'crossentropy':
+            return nn.CrossEntropyLoss()
+        else:
+            raise Exception("Unsupported loss {}".format(loss))
+
+    def transform(self, data, **kwargs):
+        return data
+
+    def __call__(self, *input, **kwargs):
+        self.model.eval()
+        return self.forward(*input, **kwargs)
+
+
+class BaseAttack(Attack):
+    """
+    Concrete base class with default implementations of all abstract methods.
+
+    Provides backward-compatible aliases (get_grad, get_momentum, update_delta)
+    so that existing subclasses that override these methods continue to work.
+
+    Most attack subclasses should inherit from BaseAttack (or its subclass MIFGSM)
+    rather than Attack directly.
+    """
 
     def load_model(self, model_name):
         """
@@ -74,61 +253,18 @@ class Attack(object):
         else:
             return load_single_model(model_name)
 
-    def forward(self, data, label, **kwargs):
+    def forward_pass(self, data, delta, momentum):
         """
-        The general attack procedure
-
-        Arguments:
-            data (N, C, H, W): tensor for input images
-            labels (N,): tensor for ground-truth labels if untargetd
-            labels (2,N): tensor for [ground-truth, targeted labels] if targeted
+        Default forward pass: transform input and get logits.
         """
-        if self.targeted:
-            assert len(label) == 2
-            label = label[1] # the second element is the targeted label tensor
-        data = data.clone().detach().to(self.device)
-        label = label.clone().detach().to(self.device)
+        return self.get_logits(self.transform(data + delta, momentum=momentum))
 
-        # Initialize adversarial perturbation
-        delta = self.init_delta(data)
-
-        momentum = 0
-        for _ in range(self.epoch):
-            # Obtain the output
-            # 先把 data+delta 通过 transform（可应用输入变换），再通过get_logits得到输出
-            logits = self.get_logits(self.transform(data+delta, momentum=momentum))
-
-            # Calculate the loss
-            loss = self.get_loss(logits, label)
-
-            # Calculate the gradients
-            grad = self.get_grad(loss, delta)
-
-            # Calculate the momentum
-            momentum = self.get_momentum(grad, momentum)
-
-            # Update adversarial perturbation
-            # 用动量或梯度更新delta并做投影约束
-            delta = self.update_delta(delta, data, momentum, self.alpha)
-
-        # 返回扰动delta
-        return delta.detach()
-
-    def get_logits(self, x, **kwargs):
+    def compute_gradient(self, loss, delta, **kwargs):
         """
-        The inference stage, which should be overridden when the attack need to change the models (e.g., ensemble-model attack, ghost, etc.) or the input (e.g. DIM, SIM, etc.)
+        Delegates to get_grad for backward compatibility.
+        Override get_grad or this method to customize gradient computation.
         """
-        return self.model(x)
-
-    def get_loss(self, logits, label):
-        """
-        The loss calculation, which should be overrideen when the attack change the loss calculation (e.g., ATA, etc.)
-        """
-        # Calculate the loss
-        # 区分是否是目标攻击，如果是目标攻击通常需要最小化木星对目标类的loss，通过对loss取负把统一的loss变成目标攻击的目标
-        # 否则通常需要最大化对非目标类的loss，样本分类错误
-        return -self.loss(logits, label) if self.targeted else self.loss(logits, label)
-
+        return self.get_grad(loss, delta, **kwargs)
 
     def get_grad(self, loss, delta, **kwargs):
         """
@@ -137,26 +273,25 @@ class Attack(object):
         # 直接对delta求梯度
         return torch.autograd.grad(loss, delta, retain_graph=False, create_graph=False)[0]
 
+    def compute_momentum(self, grad, momentum, **kwargs):
+        """
+        Delegates to get_momentum for backward compatibility.
+        Override get_momentum or this method to customize momentum computation.
+        """
+        return self.get_momentum(grad, momentum, **kwargs)
+
     def get_momentum(self, grad, momentum, **kwargs):
         """
         The momentum calculation
         """
         return momentum * self.decay + grad / (grad.abs().mean(dim=(1,2,3), keepdim=True))
 
-    def init_delta(self, data, **kwargs):
-        delta = torch.zeros_like(data).to(self.device)
-        if self.random_start:
-            if self.norm == 'linfty':
-                delta.uniform_(-self.epsilon, self.epsilon)
-            else:
-                delta.normal_(-self.epsilon, self.epsilon)
-                d_flat = delta.view(delta.size(0), -1)
-                n = d_flat.norm(p=2, dim=-1).view(delta.size(0), 1, 1, 1)
-                r = torch.zeros_like(data).uniform_(0,1).to(self.device)
-                delta *= r/n*self.epsilon
-            delta = clamp(delta, img_min-data, img_max-data)
-        delta.requires_grad = True
-        return delta
+    def update_perturbation(self, delta, data, grad, alpha, **kwargs):
+        """
+        Delegates to update_delta for backward compatibility.
+        Override update_delta or this method to customize perturbation updates.
+        """
+        return self.update_delta(delta, data, grad, alpha, **kwargs)
 
     def update_delta(self, delta, data, grad, alpha, **kwargs):
         if self.norm == 'linfty':
@@ -167,19 +302,3 @@ class Attack(object):
             delta = (delta + scaled_grad * alpha).view(delta.size(0), -1).renorm(p=2, dim=0, maxnorm=self.epsilon).view_as(delta)
         delta = clamp(delta, img_min-data, img_max-data)
         return delta.detach().requires_grad_(True)
-
-    def loss_function(self, loss):
-        """
-        Get the loss function
-        """
-        if loss == 'crossentropy':
-            return nn.CrossEntropyLoss()
-        else:
-            raise Exception("Unsupported loss {}".format(loss))
-
-    def transform(self, data, **kwargs):
-        return data
-
-    def __call__(self, *input, **kwargs):
-        self.model.eval()
-        return self.forward(*input, **kwargs)

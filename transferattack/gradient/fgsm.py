@@ -1,9 +1,9 @@
 import torch
 
 from ..utils import *
-from ..attack import Attack
+from ..attack import BaseAttack
 
-class FGSM(Attack):
+class FGSM(BaseAttack):
     """
     FGSM Attack
     'Explaining and Harnessing Adversarial Examples (ICLR 2015)'(https://arxiv.org/abs/1412.6572)
